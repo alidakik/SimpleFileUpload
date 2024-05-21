@@ -2,6 +2,7 @@ from django.shortcuts import render
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
+from django.http import HttpResponse, FileResponse
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.decorators import action
@@ -11,6 +12,9 @@ from . import serializers
 
 
 # Create your views here.
+
+
+
 
 
 class UploadedFilesViewset(ModelViewSet):
@@ -32,14 +36,14 @@ class UploadedFilesViewset(ModelViewSet):
         uploaded_file = self.get_object()
         path = uploaded_file.file.url
         
+        #models.UploadedFiles.objects.all().delete() 
+
         if path.split('.')[-1] == 'jpg':
-            return uploaded_file
+            return FileResponse(path, content_type='image/jpg')
         
         elif path.split('.')[-1] == 'py':
             # run the python file
             exec(open(path[1:]).read())
             return Response("Done")
             
-                            
-                            
-        
+    
